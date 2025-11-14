@@ -4,6 +4,7 @@ import br.app.studyflow.studyflow.model.Usuario;
 import br.app.studyflow.studyflow.repository.UsuarioRepository;
 import br.app.studyflow.studyflow.services.CookieService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class LoginController {
     }
 
     @GetMapping("/")
-    public String dashboard(){
+    public String dashboard(Model model, HttpServletRequest request) throws UnsupportedEncodingException {
+        model.addAttribute("nome", CookieService.getCookie(request,"nomeUsuario"));
         return "index";
     }
 
