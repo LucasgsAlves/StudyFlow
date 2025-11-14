@@ -13,8 +13,6 @@ import javax.sql.DataSource;
 @Configuration
 public class DataConfiguration {
 
-
-
     // Criando Conexão com BANCO SQL
     @Bean
     public DataSource dataSource() {
