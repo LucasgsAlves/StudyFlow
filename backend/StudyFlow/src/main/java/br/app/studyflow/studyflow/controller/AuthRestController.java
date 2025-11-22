@@ -64,10 +64,10 @@ public class AuthRestController {
             }
 
             Usuario novoUsuario = usuarioService.cadastrar(usuario);
-            
+
             // Remove a senha antes de retornar
             novoUsuario.setSenha(null);
-            
+
             return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
