@@ -4,10 +4,16 @@ import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { BookOpen, Calendar, BarChart3, Target, LogOut, User } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import axios from "axios";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [user, setUser] = useState(null);
+  const [stats, setStats] = useState({
+    disciplinas: 0,
+    conteudos: 0,
+    horasEstudadas: 0,
+  });
 
   useEffect(() => {
     const storedUser = localStorage.getItem("studyflow_current_user");
@@ -16,8 +22,37 @@ export default function Dashboard() {
       setLocation("/login");
       return;
     }
-    setUser(JSON.parse(storedUser));
+    const userData = JSON.parse(storedUser);
+    setUser(userData);
+    carregarEstatisticas(userData.id);
   }, [setLocation]);
+
+  const carregarEstatisticas = async (usuarioId) => {
+    try {
+      // Carregar disciplinas
+      const disciplinasRes = await axios.get(
+        `http://localhost:8080/api/disciplinas?usuarioId=${usuarioId}`
+      );
+      const disciplinas = disciplinasRes.data;
+
+      // Carregar todos os conteúdos de todas as disciplinas
+      let totalConteudos = 0;
+      for (const disciplina of disciplinas) {
+        const conteudosRes = await axios.get(
+          `http://localhost:8080/api/conteudos?disciplinaId=${disciplina.id}`
+        );
+        totalConteudos += conteudosRes.data.length;
+      }
+
+      setStats({
+        disciplinas: disciplinas.length,
+        conteudos: totalConteudos,
+        horasEstudadas: 0, // Será implementado com registros de estudo
+      });
+    } catch (error) {
+      console.error("Erro ao carregar estatísticas:", error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("studyflow_current_user");
@@ -46,28 +81,14 @@ export default function Dashboard() {
 
         {/* Cards resumidos */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-          <Card>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setLocation("/disciplinas")}>
             <CardHeader><CardTitle>Disciplinas</CardTitle></CardHeader>
             <CardContent>
-              {user.disciplinas?.length || 0} cadastradas
+              {stats.disciplinas} cadastradas
               <BookOpen />
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader><CardTitle>Horas de Estudo</CardTitle></CardHeader>
-            <CardContent>
-              {user.horasEstudo || 0}h
-              <Calendar />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader><CardTitle>Conteúdos</CardTitle></CardHeader>
-            <CardContent>
-              {user.conteudos?.length || 0}
-              <Target />
-            </CardContent>
-          </Card>
-          <Card>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setLocation("/relatorios")}>
             <CardHeader><CardTitle>Progresso</CardTitle></CardHeader>
             <CardContent>
               {user.progresso || 0}%

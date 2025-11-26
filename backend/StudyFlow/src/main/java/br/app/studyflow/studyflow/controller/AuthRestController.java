@@ -75,4 +75,49 @@ public class AuthRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
+
+    /**
+     * Endpoint para solicitação de recuperação de senha
+     * POST /api/auth/forgot-password
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+
+        if (email == null || email.isEmpty()) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Email é obrigatório");
+            return ResponseEntity.badRequest().body(error);
+        }
+
+        try {
+            // Verifica se o usuário existe
+            Usuario usuario = usuarioService.listarTodos().stream()
+                    .filter(u -> u.getEmail().equals(email))
+                    .findFirst()
+                    .orElse(null);
+
+            if (usuario == null) {
+                Map<String, String> error = new HashMap<>();
+                error.put("message", "Email não encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+            }
+
+            // Gera um token de recuperação (simulado - em produção, use JWT ou UUID)
+            String token = java.util.UUID.randomUUID().toString();
+            
+            // TODO: Em produção, salvar o token no banco com data de expiração
+            // TODO: Enviar email com link de recuperação
+            
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Email de recuperação enviado com sucesso");
+            response.put("token", token); // Apenas para desenvolvimento
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Erro ao processar solicitação: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
 }

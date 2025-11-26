@@ -8,6 +8,7 @@ import { BookOpen, Eye, EyeOff } from "lucide-react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import axios from "axios";
+import AuthNavbar from "@/components/AuthNavbar";
 
 export default function Cadastro() {
   const [, setLocation] = useLocation();
@@ -84,7 +85,9 @@ export default function Cadastro() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 flex items-center justify-center p-4 py-8">
+    <>
+      <AuthNavbar />
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 flex items-center justify-center p-4 py-8 pt-20">
       <Card className="w-full max-w-2xl border-2">
         <CardHeader className="space-y-4">
           <div className="flex justify-center">
@@ -250,5 +253,6 @@ export default function Cadastro() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

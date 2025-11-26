@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { BookOpen, Eye, EyeOff } from "lucide-react";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
+import AuthNavbar from "@/components/AuthNavbar";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -44,10 +45,11 @@ export default function Login() {
   };
 
   const handleGoogleLogin = () => toast.info("Login com Google em desenvolvimento");
-  const handleForgotPassword = () => toast.info("Recuperação de senha em desenvolvimento");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 flex items-center justify-center p-4">
+    <>
+      <AuthNavbar />
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 flex items-center justify-center p-4 pt-20">
       <Card className="w-full max-w-md border-2">
         <CardHeader className="space-y-4">
           <div className="flex justify-center items-center gap-2">
@@ -97,7 +99,7 @@ export default function Login() {
             <div className="flex justify-end">
               <button
                 type="button"
-                onClick={handleForgotPassword}
+                onClick={() => setLocation("/forgot-password")}
                 className="text-sm text-primary hover:underline"
               >
                 Esqueceu a senha?
@@ -110,20 +112,7 @@ export default function Login() {
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Ou continue com</span>
-              </div>
             </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              size="lg"
-              onClick={handleGoogleLogin}
-            >
-              Continuar com Google
-            </Button>
           </form>
 
           <div className="mt-6 text-center text-sm">
@@ -138,5 +127,6 @@ export default function Login() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }
